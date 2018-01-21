@@ -1,0 +1,29 @@
+{
+    "presets": [
+        ["env",
+            { "modules": false }
+        ],
+        "react",
+        "stage-3"
+    ],
+    "plugins": [
+        "syntax-dynamic-import",
+        "transform-runtime",
+        "transform-class-properties"
+    ],
+    "env": {
+        "local": {
+            "plugins": [
+                "react-hot-loader/babel"
+            ],
+            "presets": [
+                "react-hmre"
+            ]
+        },
+        "test": {
+            "plugins": [
+                "transform-es2015-modules-commonjs"
+            ]
+        }
+    }
+}
