@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes  from 'prop-types';
 // import { connect } from 'react-redux';
 import { NonIdealState } from '@blueprintjs/core';
+import Rx from 'rxjs';
+import request from 'services/request';
 
 
 export default class Search extends Component {
@@ -14,10 +16,42 @@ export default class Search extends Component {
     };
   }
 
+  componentWillMount() {
+    this.$search = new Rx.Subject();
+    this.$search.subscribe({
+      next: value => this.setState({
+        search: value
+      })
+    });
+    this.$search
+      .filter(search => search.length >= 2) // 2 or more characters
+      .debounceTime(600) // pause for 600ms
+      .distinctUntilChanged() // only if value has changed
+      .switchMap(search => {
+        return Rx.Observable.fromPromise(request({
+          method: 'GET',
+          url: '/search',
+          query: {
+            q: search
+          }
+        }));
+      })
+      .subscribe({
+        next: response => {
+          console.log(response);
+          this.setState(state => ({
+            results: response.body.results
+          }));
+        }
+      });
+  }
+
   onSearchChanged(value) {
-    this.setState(state => ({
-      search: value
-    }));
+    this.$search.next(value);
+  }
+
+  componentWillUnmount() {
+    this.$search.complete();
   }
 
   render() {
@@ -67,9 +101,16 @@ export default class Search extends Component {
               );
             } else {
               return (
-                results.map(item => (
-                  <h6 key={item.id}>{item.word}</h6>
-                ))
+                <div style={{ display: 'fill' }}>
+                  {results.map(item => (
+                    <div
+                      className='pt-card pt-elevation-0 pt-interactive'
+                      style={{ margin: '10px', maxWidth: '260px', display: 'inline-block'}}
+                      >
+                      <h5 key={item.id}>{item.word}</h5>
+                    </div>
+                  ))}
+                </div>
               );
             }
           })()}

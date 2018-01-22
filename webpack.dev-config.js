@@ -87,7 +87,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development'),
-      'process.env.SERVER': JSON.stringify('127.0.0.1:3000')
+      'process.env.SERVER': JSON.stringify('http://127.0.0.1:3000')
     })
   ]
 };
