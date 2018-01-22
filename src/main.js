@@ -1,4 +1,6 @@
 import '@blueprintjs/core/dist/blueprint.css';
+import 'animate.css/animate.css';
+import './styles/style.scss';
 
 import React from 'react';
 import { render } from 'react-dom';

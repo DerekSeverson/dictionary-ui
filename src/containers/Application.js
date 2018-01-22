@@ -4,6 +4,8 @@ import { Route, Redirect, Switch } from 'react-router-dom';
 import { ConnectedRouter as Router } from 'react-router-redux';
 import history from 'redux/history';
 import { NonIdealState } from '@blueprintjs/core';
+import Search from './Search';
+import Definition from './Definition';
 
 class Main extends Component {
 
@@ -30,9 +32,9 @@ class Main extends Component {
     return (
       <Router history={history}>
         <Switch>
-          <Route exact path='/' component={() => <h1>Search</h1>} />
-          <Route path='/:word' component={(match) => <h1>Word: {match.params.word}</h1>} />
-          <Redirect to='/' />
+          <Route exact path='/search' component={() => <Search />} />
+          <Route path='/definition/:word' component={(match) => <Definition word={match.params.word} />} />
+          <Redirect to='/search' />
         </Switch>
       </Router>
     );

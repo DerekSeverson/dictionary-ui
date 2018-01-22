@@ -13,6 +13,7 @@
   "private": true,
   "dependencies": {
     "@blueprintjs/core": "^1.30.0",
+    "animate.css": "^3.5.2",
     "history": "^4.6.3",
     "prop-types": "^15.5.10",
     "react": "^16.0.0",

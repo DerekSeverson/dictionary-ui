@@ -25,7 +25,13 @@ module.exports = {
   },
   resolve: {
     modules: [path.join(__dirname, './src'), 'node_modules'],
-    alias: {}
+    alias: {
+      components: path.resolve(__dirname, 'src/components'),
+      containers: path.resolve(__dirname, 'src/containers'),
+      reducers: path.resolve(__dirname, 'src/redux/reducer'),
+      services: path.resolve(__dirname, 'src/services'),
+      styles: path.resolve(__dirname, 'src/styles')
+    }
   },
   module: {
     rules: [
