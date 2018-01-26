@@ -21,17 +21,19 @@ class Definition extends Component {
 
   state = {
     status: STATUS.LOADING,
+    word: '',
     info: null
   };
 
   componentDidMount() {
-    const { word } = this.props;
+    const { word } = this.props; // word id
     request({
       url: `/definition/${word}`
     })
     .then(response => {
       this.setState({
         status: STATUS.LOADED,
+        word: response.body.word,
         info: Object.entries(groupby(response.body.definitions, 'category'))
       });
     })
@@ -41,34 +43,32 @@ class Definition extends Component {
   }
 
   render() {
-    const { word } = this.props;
-    const { info, status } = this.state;
+    const { info, status, word } = this.state;
 
-    return (
-      <div className={styles.definition_page}>
-        <h1 className={styles.title}>{word}</h1>
-        <hr />
-        {(() => {
+    if (status === STATUS.LOADING) {
+      return null;
+    }
 
-          if (status === STATUS.LOADING) {
-            return null;
-          }
+    if (status === STATUS.ERROR) {
+      return (
+        <div className='margin-top-30'>
+          <NonIdealState
+            title='No Definition'
+            description='Sorry, but we could not find your word.  Try another?'
+            visual='disable'
+          />
+        </div>
+      );
+    }
 
-          if (status === STATUS.ERROR) {
-            return (
-              <div className='margin-top-30'>
-                <NonIdealState
-                  title='No Definition'
-                  description='Sorry, but we could not find your word.  Try another?'
-                  visual='disable'
-                />
-              </div>
-            );
-          }
+    if (status === STATUS.LOADED && info) {
 
-          if (status === STATUS.LOADED && info) {
-
-            return (info.map(([category, defs]) => (
+      return (
+        <div className={styles.definition_page}>
+          <h1 className={styles.title}>{word}</h1>
+          <hr />
+          <div>
+            {info.map(([category, defs]) => (
               <div key={category} className='margin-left-15 margin-top-30'>
                 <h3 className={styles.category}>{category}</h3>
                 <div>
@@ -85,12 +85,12 @@ class Definition extends Component {
                   ))}
                 </div>
               </div>
-            )));
-          }
+            ))}
+          </div>
+        </div>
+      );
+    }
 
-        })()}
-      </div>
-    );
   }
 
 };
