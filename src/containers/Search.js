@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { NonIdealState, Button } from '@blueprintjs/core';
+import { Link } from 'react-router-dom';
 import Rx from 'rxjs';
 import request from 'services/request';
 import styles from './Search.scss';
@@ -13,7 +14,7 @@ const DEFAULT_STATE = {
   offset: 0
 };
 
-export default class Search extends Component {
+class Search extends Component {
 
   constructor(props) {
     super(props);
@@ -151,9 +152,12 @@ export default class Search extends Component {
                       <div key={item.id}
                         className={styles.search_list_item}
                       >
-                        <span key={item.id}
-                          className='pt-tag pt-large pt-minimal'
-                        >{item.word}</span>
+                        <Link to={`/definition/${item.id}`}>
+                          <span
+                            key={item.id}
+                            className='pt-tag pt-large pt-minimal'
+                          >{item.word}</span>
+                        </Link>
                       </div>
                     ))}
                   </div>
@@ -178,3 +182,5 @@ export default class Search extends Component {
   }
 
 }
+
+export default Search;

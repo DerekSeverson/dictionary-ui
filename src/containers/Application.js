@@ -22,8 +22,9 @@ class Main extends Component {
     if (this.state.error) {
       return (
         <NonIdealState
+          className='margin-top-30'
           title='Oops!'
-          description='Sorry, something went wrong - Please try reloading the page.'
+          description='Sorry, something went wrong. Please try reloading the page.'
           visual='error'
         />
       );
@@ -32,8 +33,12 @@ class Main extends Component {
     return (
       <Router history={history}>
         <Switch>
-          <Route exact path='/search' component={() => <Search />} />
-          <Route path='/definition/:word' component={(match) => <Definition word={match.params.word} />} />
+          <Route exact path='/search' component={() => (
+            <Search />
+          )} />
+          <Route exact path='/definition/:word' component={({ match }) => (
+            <Definition word={match.params.word} />
+          )} />
           <Redirect to='/search' />
         </Switch>
       </Router>

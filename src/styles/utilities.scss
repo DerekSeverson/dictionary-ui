@@ -1,7 +1,48 @@
 
 :global {
 
-  @each $size in 5, 10, 15, 20, 30 {
+  .absolute {
+    position: absolute;
+  }
+
+  .relative {
+    position: relative;
+  }
+
+  .fixed {
+    position: fixed;
+  }
+
+  .static {
+    position: static;
+  }
+
+  .inline {
+    display: inline !important;
+  }
+
+  .inline-block {
+    display: inline-block !important;
+  }
+
+  .block {
+    display: block !important;
+  }
+
+  .float-right {
+    float: right !important;
+  }
+
+  .float-left {
+    float: left !important;
+  }
+
+  .clear {
+    clear: both;
+  }
+
+
+  @each $size in 5, 10, 15, 20, 25, 30 {
     @each $side in left, right, top, bottom {
       .pad-#{$side}-#{$size} {
         padding-#{$side}: #{$size}px !important;
