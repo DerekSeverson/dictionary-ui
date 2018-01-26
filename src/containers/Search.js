@@ -96,22 +96,24 @@ export default class Search extends Component {
 
     return (
       <div className={styles.search_page}>
-        <div className='pt-input-group pt-large'>
-          <span className='pt-icon pt-icon-search' />
-          <input
-            className='pt-input'
-            type='search'
-            placeholder='Search the dictionary'
-            value={search}
-            onChange={e => this.onSearchChanged(e.target.value)}
-          />
-          {search && <Button
-            className={`pt-minimal ${styles.circular}`}
-            iconName='cross'
-            onClick={() => this.clearSearch()}
-          />}
+        <div className={styles.search_bar}>
+          <div className={`pt-input-group pt-large ${styles.search_input}`}>
+            <span className='pt-icon pt-icon-search' />
+            <input
+              className='pt-input'
+              type='search'
+              placeholder='Search the dictionary'
+              value={search}
+              onChange={e => this.onSearchChanged(e.target.value)}
+            />
+            {search && <Button
+              className={`pt-minimal ${styles.circular}`}
+              iconName='cross'
+              onClick={() => this.clearSearch()}
+            />}
+          </div>
         </div>
-        <div>
+        <div className={styles.search_body}>
           {(() => {
             if (search.length === 0) {
               return (

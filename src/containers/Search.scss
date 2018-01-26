@@ -1,7 +1,25 @@
 
 .search_page {
   width: 100%;
-  padding: 30px;
+  padding: 0 30px 20px;
+}
+
+.search_bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 5;
+  background: linear-gradient(rgba(256, 256, 256, 1), rgba(256, 256, 256, 0.75));
+}
+
+.search_input {
+  // background-color: #FFF;
+}
+
+.search_body {
+  margin-top: 80px;
 }
 
 .search_list {
