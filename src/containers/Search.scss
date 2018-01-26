@@ -1,0 +1,22 @@
+
+.search_page {
+  width: 100%;
+  padding: 30px;
+}
+
+.search_list {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  margin: 15px 0;
+
+  &_item {
+    display: flex;
+    margin: 2px 4px;
+    display: inline-block;
+  }
+}
+
+.circular {
+  border-radius: 50%;
+}

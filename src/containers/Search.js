@@ -1,49 +1,86 @@
 import React, { Component } from 'react';
-import PropTypes  from 'prop-types';
-// import { connect } from 'react-redux';
-import { NonIdealState } from '@blueprintjs/core';
+import { NonIdealState, Button } from '@blueprintjs/core';
 import Rx from 'rxjs';
 import request from 'services/request';
+import styles from './Search.scss';
 
+const DEFAULT_STATE = {
+  loading: false,
+  search: '',
+  results: null,
+  total: 0,
+  limit: 50,
+  offset: 0
+};
 
 export default class Search extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      search: '',
-      results: []
-    };
+    this.state = DEFAULT_STATE;
   }
 
   componentWillMount() {
+
     this.$search = new Rx.Subject();
-    this.$search.subscribe({
-      next: value => this.setState({
-        search: value
-      })
+
+    // Immediate View Response
+    this.$search.subscribe(value => {
+      this.setState(state => (
+        (value.length === 0)
+          ? ({ ...DEFAULT_STATE })
+          : ({ search: value })
+      ));
     });
+
+    // Delayed Search Request
     this.$search
-      .filter(search => search.length >= 2) // 2 or more characters
-      .debounceTime(600) // pause for 600ms
+      .filter(search => search.length > 0) // 1 or more characters
+      .debounceTime(400) // pause for 400ms
       .distinctUntilChanged() // only if value has changed
       .switchMap(search => {
-        return Rx.Observable.fromPromise(request({
-          method: 'GET',
-          url: '/search',
-          query: {
-            q: search
-          }
-        }));
+        return Rx.Observable.fromPromise(
+          request({
+            url: '/search',
+            query: { q: search }
+          })
+        );
       })
-      .subscribe({
-        next: response => {
-          console.log(response);
-          this.setState(state => ({
-            results: response.body.results
-          }));
-        }
+      .subscribe(response => {
+        this.setState({
+          results: response.body.results,
+          total: response.body.metadata.total,
+          limit: response.body.metadata.limit,
+          offset: response.body.metadata.offset
+        });
       });
+  }
+
+  clearSearch() {
+    this.setState({ ...DEFAULT_STATE });
+  }
+
+  onLoadMore() {
+    this.setState({
+      loading: true
+    });
+    request({
+      url: '/search',
+      query: {
+        q: this.state.search,
+        offset: this.state.offset + this.state.limit,
+        limit: this.state.limit
+      }
+    })
+    .then(response => {
+      this.setState(state => ({
+        loading: false,
+        results: state.results.concat(response.body.results),
+        total: response.body.metadata.total,
+        limit: response.body.metadata.limit,
+        offset: response.body.metadata.offset
+      }));
+    });
   }
 
   onSearchChanged(value) {
@@ -55,10 +92,10 @@ export default class Search extends Component {
   }
 
   render() {
-    const { search, results } = this.state;
+    const { search, results, total, offset, limit, loading } = this.state;
 
     return (
-      <div>
+      <div className={styles.search_page}>
         <div className='pt-input-group pt-large'>
           <span className='pt-icon pt-icon-search' />
           <input
@@ -68,12 +105,17 @@ export default class Search extends Component {
             value={search}
             onChange={e => this.onSearchChanged(e.target.value)}
           />
+          {search && <Button
+            className={`pt-minimal ${styles.circular}`}
+            iconName='cross'
+            onClick={() => this.clearSearch()}
+          />}
         </div>
         <div>
           {(() => {
             if (search.length === 0) {
               return (
-                <div style={{ marginTop: '30px' }}>
+                <div className='margin-top-30'>
                   <NonIdealState
                     title='Give it a try!'
                     description='Search the dictionary for a particular word.'
@@ -85,9 +127,9 @@ export default class Search extends Component {
                   />
                 </div>
               );
-            } else if (results.length === 0) {
+            } else if (results && results.length === 0) {
               return (
-                <div style={{ marginTop: '30px' }}>
+                <div className='margin-top-30'>
                   <NonIdealState
                     title='No search results'
                     description={(
@@ -101,15 +143,29 @@ export default class Search extends Component {
               );
             } else {
               return (
-                <div style={{ display: 'fill' }}>
-                  {results.map(item => (
-                    <div
-                      className='pt-card pt-elevation-0 pt-interactive'
-                      style={{ margin: '10px', maxWidth: '260px', display: 'inline-block'}}
+                <div>
+                  <div className={styles.search_list}>
+                    {results && results.map(item => (
+                      <div key={item.id}
+                        className={styles.search_list_item}
                       >
-                      <h5 key={item.id}>{item.word}</h5>
-                    </div>
-                  ))}
+                        <span key={item.id}
+                          className='pt-tag pt-large pt-minimal'
+                        >{item.word}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div>
+                    {(total > (offset + limit)) && (
+                      <Button
+                        className='pt-large pt-fill'
+                        text='Load More'
+                        disabled={loading}
+                        loading={loading}
+                        onClick={() => this.onLoadMore()}
+                      />
+                    )}
+                  </div>
                 </div>
               );
             }
@@ -120,17 +176,3 @@ export default class Search extends Component {
   }
 
 }
-
-// Search.propTypes = {
-//   dispatch: PropTypes.func.isRequired,
-//   input: PropTypes.string,
-//   results: PropTypes.array
-// };
-//
-// function mapStateToProps(state, ownProps) {
-//   return {
-//
-//   };
-// }
-//
-// export default connect(mapStateToProps)(Search);

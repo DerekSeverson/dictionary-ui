@@ -1,0 +1,103 @@
+
+:global {
+
+  @each $size in 5, 10, 15, 20, 30 {
+    @each $side in left, right, top, bottom {
+      .pad-#{$side}-#{$size} {
+        padding-#{$side}: #{$size}px !important;
+      }
+
+      .margin-#{$side}-#{$size} {
+        margin-#{$side}: #{$size}px !important;
+      }
+    }
+
+    .margin-v-#{$size} {
+      margin-top: #{$size}px;
+      margin-bottom: #{$size}px;
+    }
+
+    .margin-h-#{$size} {
+      margin-left: #{$size}px;
+      margin-right: #{$size}px;
+    }
+
+    .pad-v-#{$size} {
+      padding-top: #{$size}px;
+      padding-bottom: #{$size}px;
+    }
+
+    .pad-h-#{$size} {
+      padding-right: #{$size}px;
+      padding-left: #{$size}px;
+    }
+  }
+
+  .vbox {
+    display: flex;
+
+    flex-direction: column;
+    align-content: flex-start;
+  }
+
+  .hbox {
+    display: flex;
+
+    flex-direction: row;
+    align-content: flex-start;
+
+    flex-wrap: nowrap;
+  }
+
+  .flex {
+    flex: 1;
+  }
+
+  .stretch-self {
+    align-self: stretch;
+  }
+
+  .center-self {
+    align-self: center;
+  }
+
+  .main-start {
+    justify-content: flex-start;
+  }
+
+  .cross-start {
+    align-items: flex-start;
+    align-content: flex-start;
+  }
+
+  .main-center {
+    justify-content: center;
+  }
+
+  .cross-center {
+    align-items: center;
+    align-content: center;
+  }
+
+  .main-end {
+    justify-content: flex-end;
+  }
+
+  .cross-end {
+    align-items: flex-end;
+    align-content: flex-end;
+  }
+
+  .cross-stretch {
+    align-items: stretch;
+    align-content: stretch;
+  }
+
+  .wrap {
+    flex-wrap: wrap;
+  }
+
+  .nowrap {
+    flex-wrap: nowrap;
+  }
+}
