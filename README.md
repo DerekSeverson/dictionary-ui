@@ -4,6 +4,9 @@ Simple responsive Reactjs web app created for fun.
 
 As the user types within the search bar, words that start with the user input are asyncronously loaded onto the page.  Clicking on one of the words will direct the user to the word's definition page.  
 
+## Demo
+
+![Demo](https://raw.githubusercontent.com/DerekSeverson/dictionary-ui/master/demo/usage.gif)
 
 ## Getting Started
 
